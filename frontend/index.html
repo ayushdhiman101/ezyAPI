@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>EzyAPI - Paste JSON, Get API</title>
+    <title>EzyAPI - Paste Multiple JSONs, Get APIs</title>
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body class="bg-gray-100 p-10 font-sans">
@@ -12,7 +12,7 @@
         id="jsonInput"
         rows="10"
         class="w-full border p-2 rounded"
-        placeholder="Paste JSON here"
+        placeholder="Paste JSON objects here, each on a new line"
       ></textarea>
       <button
         onclick="submitJSON()"
@@ -25,19 +25,57 @@
 
     <script>
       async function submitJSON() {
-        const json = document.getElementById("jsonInput").value;
+        const jsonText = document.getElementById("jsonInput").value;
+
+        // Check if JSON input is not empty
+        if (!jsonText.trim()) {
+          alert("Please paste some JSON!");
+          return;
+        }
+
+        // Split the input by new line, parse JSON, and filter invalid ones
+        const jsonArray = jsonText
+          .split("\n")
+          .map((item) => {
+            try {
+              return JSON.parse(item.trim());
+            } catch (e) {
+              console.error("Invalid JSON:", item); // Log invalid JSON
+              return null;
+            }
+          })
+          .filter((item) => item !== null); // Ensure only valid JSON objects are included
+
+        // Check if we have any valid JSON objects
+        if (jsonArray.length === 0) {
+          alert("Please paste valid JSON objects!");
+          return;
+        }
+
         try {
           const response = await fetch("https://ezyapi.onrender.com/mock", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ data: JSON.parse(json) }),
+            body: JSON.stringify({ data: jsonArray }),
           });
+
           const result = await response.json();
-          document.getElementById(
-            "result"
-          ).innerHTML = `✅ Your mock API: <a href="${result.url}" target="_blank">${result.url}</a>`;
+          console.log("Backend Response:", result); // Log backend response for debugging
+
+          if (result.urls) {
+            // Display the generated mock URLs
+            const urls = result.urls
+              .map((url) => `<a href="${url}" target="_blank">${url}</a>`)
+              .join("<br/>");
+            document.getElementById(
+              "result"
+            ).innerHTML = `📦 Generated Mock APIs:<br/>${urls}`;
+          } else {
+            alert("Failed to generate mocks!");
+          }
         } catch (e) {
-          alert("Invalid JSON or server error.");
+          console.error("Error in request:", e); // Log any errors in the request
+          alert("Error: " + e.message);
         }
       }
     </script>

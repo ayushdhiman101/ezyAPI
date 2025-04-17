@@ -16,21 +16,28 @@ router.post("/", async (req, res) => {
 
   const urls = [];
 
-  // Process each JSON object in the array
-  for (const jsonData of data) {
-    if (typeof jsonData !== "object") {
-      return res
-        .status(400)
-        .json({ error: "Each item in the array must be a valid JSON object" });
+  try {
+    // Process each JSON object in the array
+    for (const jsonData of data) {
+      if (typeof jsonData !== "object") {
+        return res
+          .status(400)
+          .json({
+            error: "Each item in the array must be a valid JSON object",
+          });
+      }
+
+      const id = generateID();
+      await redis.setex(`mock:${id}`, 172800, JSON.stringify(jsonData)); // TTL = 48 hours
+      urls.push(`${process.env.BASE_URL}/api/${id}`);
     }
 
-    const id = generateID();
-    await redis.setex(`mock:${id}`, 172800, JSON.stringify(jsonData)); // TTL = 48 hours
-    urls.push(`${process.env.BASE_URL}/api/${id}`);
+    // Return the list of URLs for the generated mocks
+    return res.json({ urls });
+  } catch (error) {
+    console.error("Error processing mocks:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
-
-  // Return the list of URLs for the generated mocks
-  res.json({ urls });
 });
 
 // GET /api/:id
