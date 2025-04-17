@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>EzyAPI - Paste JSON, Get API</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 p-10 font-sans">
+    <div class="max-w-2xl mx-auto bg-white p-8 rounded shadow">
+      <h1 class="text-2xl font-bold mb-4">🚀 EzyAPI</h1>
+      <textarea
+        id="jsonInput"
+        rows="10"
+        class="w-full border p-2 rounded"
+        placeholder="Paste JSON here"
+      ></textarea>
+      <button
+        onclick="submitJSON()"
+        class="bg-blue-600 text-white px-4 py-2 rounded mt-4"
+      >
+        Generate API
+      </button>
+      <div id="result" class="mt-4 text-green-600 font-mono"></div>
+    </div>
+
+    <script>
+      async function submitJSON() {
+        const json = document.getElementById("jsonInput").value;
+        try {
+          const response = await fetch("https://ezyapi.onrender.com/mock", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ data: JSON.parse(json) }),
+          });
+          const result = await response.json();
+          document.getElementById(
+            "result"
+          ).innerHTML = `✅ Your mock API: <a href="${result.url}" target="_blank">${result.url}</a>`;
+        } catch (e) {
+          alert("Invalid JSON or server error.");
+        }
+      }
+    </script>
+  </body>
+</html>
