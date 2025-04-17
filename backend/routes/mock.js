@@ -6,13 +6,31 @@ const generateID = require("../utils/idGenerator");
 // POST /mock
 router.post("/", async (req, res) => {
   const { data } = req.body;
-  if (!data || typeof data !== "object") {
-    return res.status(400).json({ error: "Invalid JSON payload" });
+
+  // Validate that data is an array
+  if (!Array.isArray(data)) {
+    return res
+      .status(400)
+      .json({ error: "Data must be an array of JSON objects" });
   }
 
-  const id = generateID();
-  await redis.setex(`mock:${id}`, 172800, JSON.stringify(data)); // TTL = 48 hours
-  res.json({ url: `${process.env.BASE_URL}/api/${id}` });
+  const urls = [];
+
+  // Process each JSON object in the array
+  for (const jsonData of data) {
+    if (typeof jsonData !== "object") {
+      return res
+        .status(400)
+        .json({ error: "Each item in the array must be a valid JSON object" });
+    }
+
+    const id = generateID();
+    await redis.setex(`mock:${id}`, 172800, JSON.stringify(jsonData)); // TTL = 48 hours
+    urls.push(`${process.env.BASE_URL}/api/${id}`);
+  }
+
+  // Return the list of URLs for the generated mocks
+  res.json({ urls });
 });
 
 // GET /api/:id
