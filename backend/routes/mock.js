@@ -32,7 +32,7 @@ router.post("/", async (req, res) => {
     await redis.setex(`mock:${id}`, 172800, JSON.stringify(data)); // TTL = 48 hours
 
     // Step 5: Return the generated URL with the single UUID
-    const mockUrl = `https://ezyapi.onrender.com/api/${id}`;
+    const mockUrl = `${process.env.BASE_URL}/api/${id}`;
     res.json({ success: true, url: mockUrl });
   } catch (err) {
     console.error("Error creating mock:", err);
