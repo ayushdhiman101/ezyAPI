@@ -4,39 +4,39 @@ const redis = require("../redis");
 const generateID = require("../utils/idGenerator");
 
 // POST /mock
+// POST /mock
+// POST /mock
 router.post("/", async (req, res) => {
   const { data } = req.body;
-
-  // Validate that data is an array
-  if (!Array.isArray(data)) {
-    return res
-      .status(400)
-      .json({ error: "Data must be an array of JSON objects" });
-  }
-
-  const urls = [];
-
   try {
-    // Process each JSON object in the array
-    for (const jsonData of data) {
-      if (typeof jsonData !== "object") {
-        return res
-          .status(400)
-          .json({
-            error: "Each item in the array must be a valid JSON object",
-          });
-      }
-
-      const id = generateID();
-      await redis.setex(`mock:${id}`, 172800, JSON.stringify(jsonData)); // TTL = 48 hours
-      urls.push(`${process.env.BASE_URL}/api/${id}`);
+    // Step 1: Validate input
+    if (!Array.isArray(data)) {
+      return res
+        .status(400)
+        .json({ error: "Data must be an array of JSON objects" });
     }
 
-    // Return the list of URLs for the generated mocks
-    return res.json({ urls });
-  } catch (error) {
-    console.error("Error processing mocks:", error);
-    return res.status(500).json({ error: "Internal server error" });
+    // Step 2: Validate each object in array
+    for (const item of data) {
+      if (typeof item !== "object" || item === null || Array.isArray(item)) {
+        return res
+          .status(400)
+          .json({ error: "Each item must be a valid JSON object" });
+      }
+    }
+
+    // Step 3: Generate UUID once for the entire array
+    const id = generateID(); // Create one ID for the entire array
+
+    // Step 4: Store the full array as a stringified JSON under mock:{id}
+    await redis.setex(`mock:${id}`, 172800, JSON.stringify(data)); // TTL = 48 hours
+
+    // Step 5: Return the generated URL with the single UUID
+    const mockUrl = `https://ezyapi.onrender.com/api/${id}`;
+    res.json({ success: true, url: mockUrl });
+  } catch (err) {
+    console.error("Error creating mock:", err);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 

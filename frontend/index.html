@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>EzyAPI - Paste Multiple JSONs, Get APIs</title>
+    <title>EzyAPI - Paste Multiple JSONs, Get a Single API</title>
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body class="bg-gray-100 p-10 font-sans">
@@ -12,7 +12,11 @@
         id="jsonInput"
         rows="10"
         class="w-full border p-2 rounded"
-        placeholder="Paste JSON objects here, each on a new line"
+        placeholder='Paste JSON objects here like:
+                      [
+                        { "name": "Ayush" }
+                        { "name": "Joy" }
+                      ]'
       ></textarea>
       <button
         onclick="submitJSON()"
@@ -25,30 +29,28 @@
 
     <script>
       async function submitJSON() {
-        const jsonText = document.getElementById("jsonInput").value;
+        const input = document.getElementById("jsonInput").value;
 
-        // Check if JSON input is not empty
-        if (!jsonText.trim()) {
+        if (!input.trim()) {
           alert("Please paste some JSON!");
           return;
         }
 
-        // Split the input by new line, parse JSON, and filter invalid ones
-        const jsonArray = jsonText
+        // Try parsing each line as JSON
+        const jsonArray = input
           .split("\n")
-          .map((item) => {
+          .map((line) => {
             try {
-              return JSON.parse(item.trim());
+              return JSON.parse(line.trim());
             } catch (e) {
-              console.error("Invalid JSON:", item); // Log invalid JSON
+              console.error("Invalid JSON:", line);
               return null;
             }
           })
-          .filter((item) => item !== null); // Ensure only valid JSON objects are included
+          .filter((item) => item !== null);
 
-        // Check if we have any valid JSON objects
         if (jsonArray.length === 0) {
-          alert("Please paste valid JSON objects!");
+          alert("No valid JSON objects found!");
           return;
         }
 
@@ -60,22 +62,18 @@
           });
 
           const result = await response.json();
-          console.log("Backend Response:", result); // Log backend response for debugging
+          console.log("Server response:", result);
 
-          if (result.urls) {
-            // Display the generated mock URLs
-            const urls = result.urls
-              .map((url) => `<a href="${url}" target="_blank">${url}</a>`)
-              .join("<br/>");
+          if (result.url && result.success) {
             document.getElementById(
               "result"
-            ).innerHTML = `📦 Generated Mock APIs:<br/>${urls}`;
+            ).innerHTML = `✅ <a href="${result.url}" target="_blank">${result.url}</a>`;
           } else {
-            alert("Failed to generate mocks!");
+            alert("Failed to generate mock API!");
           }
-        } catch (e) {
-          console.error("Error in request:", e); // Log any errors in the request
-          alert("Error: " + e.message);
+        } catch (error) {
+          console.error("Error:", error);
+          alert("Something went wrong!");
         }
       }
     </script>
