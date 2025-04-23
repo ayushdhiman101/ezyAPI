@@ -12,7 +12,7 @@
         id="jsonInput"
         rows="10"
         class="w-full border p-2 rounded"
-        placeholder="Paste JSON here."
+        placeholder="Paste your JSON here. For multiple objects, use an array format: [ {...}, {...} ]"
       ></textarea>
       <button
         onclick="submitJSON()"
@@ -20,7 +20,7 @@
       >
         Generate API
       </button>
-      <div id="result" class="mt-4 text-green-600 font-mono"></div>
+      <div id="result" class="mt-4 font-mono"></div>
     </div>
 
     <script>
@@ -61,10 +61,21 @@
 
           const result = await response.json();
 
+          const colors = [
+            "text-red-600",
+            "text-blue-600",
+            "text-green-600",
+            "text-purple-600",
+            "text-pink-600",
+            "text-yellow-600",
+          ];
+
           if (result.url) {
+            const colorClass =
+              colors[Math.floor(Math.random() * colors.length)];
             document.getElementById(
               "result"
-            ).innerHTML = `📦 Mock API Link:<br/><a href="${result.url}" target="_blank">${result.url}</a>`;
+            ).innerHTML = `<span class="${colorClass}">✅ Your Mock API:<br/><a href="${result.url}" target="_blank">${result.url}</a></span>`;
           } else {
             alert("Failed to generate mock!");
           }
