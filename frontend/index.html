@@ -53,6 +53,8 @@
           alert("Invalid JSON format!");
           return;
         }
+        const apiUrl = process.env.API_URL;
+
         try {
           const response = await fetch(apiUrl, {
             method: "POST",
