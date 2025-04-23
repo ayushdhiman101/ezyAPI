@@ -2,12 +2,22 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>EzyAPI - Paste Multiple JSONs, Get a Single API</title>
+    <title>EzyAPI - Paste JSONs, Get a Single API</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN to load icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
   </head>
   <body class="bg-gray-100 p-10 font-sans">
     <div class="max-w-2xl mx-auto bg-white p-8 rounded shadow">
-      <h1 class="text-2xl font-bold mb-4">🚀 EzyAPI</h1>
+      <!-- Title with Icon -->
+      <h1 class="text-xl font-bold mb-4 flex items-center">
+        <i class="fa-solid fa-file mr-2"></i> EzyAPI - Paste JSONs, Get a Single
+        API
+      </h1>
+
       <textarea
         id="jsonInput"
         rows="10"
@@ -24,8 +34,6 @@
     </div>
 
     <script>
-      require("dotenv").config();
-
       let colorIndex = 0;
       const styles = [
         "bg-blue-100 border-blue-400 text-blue-800",
@@ -66,7 +74,8 @@
           alert("Invalid JSON format!");
           return;
         }
-        const apiUrl = "https://ezyapi.up.railway.app/mock";
+
+        const apiUrl = "https://ezyapi.up.railway.app/mock"; // API URL for mock generation
 
         try {
           const response = await fetch(apiUrl, {
@@ -79,8 +88,9 @@
 
           if (result.url) {
             const style = rotateStyle();
-            const card = document.createElement("div");
+            const container = document.getElementById("resultContainer");
 
+            const card = document.createElement("div");
             card.className = `transition-all duration-300 p-4 border rounded shadow ${style} hover:scale-105`;
             card.innerHTML = `
               <p class="font-bold">📦 New API Link:</p>
@@ -89,7 +99,7 @@
 
             container.appendChild(card);
           } else {
-            alert("Somethings not right, failed to generate mock!");
+            alert("Something went wrong, failed to generate mock!");
           }
         } catch (e) {
           console.error("Error in request:", e);
