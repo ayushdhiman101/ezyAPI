@@ -12,10 +12,9 @@
         id="jsonInput"
         rows="10"
         class="w-full border p-2 rounded"
-        placeholder='Paste JSON objects here like:
-                      [
+        placeholder='[
                         { "name": "Ayush" }
-                        { "name": "Joy" }
+                        { "name": "Dhiman" }
                       ]'
       ></textarea>
       <button
@@ -30,31 +29,30 @@
     <script>
       require("dotenv").config();
       async function submitJSON() {
-        const input = document.getElementById("jsonInput").value;
+        const input = document.getElementById("jsonInput").value.trim();
 
-        if (!input.trim()) {
+        if (!input) {
           alert("Please paste some JSON!");
           return;
         }
 
-        // Try parsing each line as JSON
-        const jsonArray = input
-          .split("\n")
-          .map((line) => {
-            try {
-              return JSON.parse(line.trim());
-            } catch (e) {
-              console.error("Invalid JSON:", line);
-              return null;
-            }
-          })
-          .filter((item) => item !== null);
+        let jsonArray = [];
 
-        if (jsonArray.length === 0) {
-          alert("No valid JSON objects found!");
+        try {
+          const parsed = JSON.parse(input);
+
+          if (Array.isArray(parsed)) {
+            jsonArray = parsed;
+          } else if (typeof parsed === "object") {
+            jsonArray = [parsed]; // Wrap single object in array
+          } else {
+            throw new Error("Invalid JSON structure");
+          }
+        } catch (e) {
+          console.error("Failed to parse JSON:", e);
+          alert("Invalid JSON format!");
           return;
         }
-        const apiUrl = process.env.API_URL;
         try {
           const response = await fetch(apiUrl, {
             method: "POST",
@@ -63,18 +61,17 @@
           });
 
           const result = await response.json();
-          console.log("Server response:", result);
 
-          if (result.url && result.success) {
+          if (result.url) {
             document.getElementById(
               "result"
-            ).innerHTML = `✅ <a href="${result.url}" target="_blank">${result.url}</a>`;
+            ).innerHTML = `📦 Mock API Link:<br/><a href="${result.url}" target="_blank">${result.url}</a>`;
           } else {
-            alert("Failed to generate mock API!");
+            alert("Failed to generate mock!");
           }
-        } catch (error) {
-          console.error("Error:", error);
-          alert("Something went wrong!");
+        } catch (e) {
+          console.error("Error in request:", e);
+          alert("Error: " + e.message);
         }
       }
     </script>
