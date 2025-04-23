@@ -12,10 +12,7 @@
         id="jsonInput"
         rows="10"
         class="w-full border p-2 rounded"
-        placeholder='[
-                        { "name": "Ayush" }
-                        { "name": "Dhiman" }
-                      ]'
+        placeholder="Paste JSON here."
       ></textarea>
       <button
         onclick="submitJSON()"
@@ -53,7 +50,7 @@
           alert("Invalid JSON format!");
           return;
         }
-        const apiUrl = process.env.API_URL;
+        const apiUrl = "https://ezyapi.up.railway.app/mock";
 
         try {
           const response = await fetch(apiUrl, {
