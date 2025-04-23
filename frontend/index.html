@@ -20,11 +20,27 @@
       >
         Generate API
       </button>
-      <div id="result" class="mt-4 font-mono"></div>
+      <div id="resultContainer" class="mt-6 space-y-4"></div>
     </div>
 
     <script>
       require("dotenv").config();
+
+      let colorIndex = 0;
+      const styles = [
+        "bg-blue-100 border-blue-400 text-blue-800",
+        "bg-green-100 border-green-400 text-green-800",
+        "bg-yellow-100 border-yellow-400 text-yellow-800",
+        "bg-purple-100 border-purple-400 text-purple-800",
+        "bg-pink-100 border-pink-400 text-pink-800",
+      ];
+
+      function rotateStyle() {
+        const style = styles[colorIndex];
+        colorIndex = (colorIndex + 1) % styles.length;
+        return style;
+      }
+
       async function submitJSON() {
         const input = document.getElementById("jsonInput").value.trim();
 
@@ -61,23 +77,19 @@
 
           const result = await response.json();
 
-          const colors = [
-            "text-red-600",
-            "text-blue-600",
-            "text-green-600",
-            "text-purple-600",
-            "text-pink-600",
-            "text-yellow-600",
-          ];
-
           if (result.url) {
-            const colorClass =
-              colors[Math.floor(Math.random() * colors.length)];
-            document.getElementById(
-              "result"
-            ).innerHTML = `<span class="${colorClass}">✅ Your Mock API:<br/><a href="${result.url}" target="_blank">${result.url}</a></span>`;
+            const style = rotateStyle();
+            const card = document.createElement("div");
+
+            card.className = `transition-all duration-300 p-4 border rounded shadow ${style} hover:scale-105`;
+            card.innerHTML = `
+              <p class="font-bold">📦 New API Link:</p>
+              <a href="${result.url}" target="_blank" class="underline hover:text-black transition-all">${result.url}</a>
+            `;
+
+            container.appendChild(card);
           } else {
-            alert("Failed to generate mock!");
+            alert("Somethings not right, failed to generate mock!");
           }
         } catch (e) {
           console.error("Error in request:", e);
