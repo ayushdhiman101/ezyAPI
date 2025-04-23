@@ -1,56 +1,74 @@
-# 🚀 EzyAPI
+# 🚀 EzyAPI – Instantly Create Mock REST APIs from JSON
 
-**EzyAPI** is a super simple tool that lets developers paste JSON and instantly get a mock API endpoint — perfect for frontend testing, quick prototypes, or simulating backend responses without spinning up a server.
+**EzyAPI** is a developer-friendly tool that allows you to generate mock REST API endpoints instantly by simply pasting JSON data. Whether you're a frontend developer, building a prototype, testing UI components, or learning about APIs — EzyAPI speeds up your workflow with zero setup.
 
-[🔗 Try it live](https://ezyapi.vercel.app)
+🔗 **[Try it live](https://ezyapi.vercel.app)** – No login. No signup. Just dev speed.
+
+---
+
+## 📌 Description
+
+**EzyAPI** is the easiest way to turn your JSON into a real API URL. It’s perfect for frontend developers and students who need mock data fast without setting up a backend or database.
+
+It supports both **single JSON objects** and **arrays of objects**, instantly generating a live endpoint that you can use in your frontend apps, Postman, or even in real-world API demos.
+
+Built with **Node.js, Express, and Redis**, and deployed on **Vercel** and **Render**, EzyAPI is lightweight, blazing fast, and completely free to use.
 
 ---
 
 ## 📦 Features
 
-- ⚡ Paste JSON → Get an instant API endpoint  
-- 🧪 Supports arrays or single JSON objects  
-- 🌐 Hosted and deployed using **Render** (backend) & **Vercel** (frontend)  
-- 🎨 Clean UI with TailwindCSS  
-- 🔒 No login, no signup, no rate limits  
+- ⚡ **Paste JSON → Get instant REST API**
+- 🧪 **Supports both single objects and arrays**
+- 🌐 **Hosted on Render (API) and Vercel (frontend)**
+- 🎨 **Clean and responsive UI built with TailwindCSS**
+- 🔒 **No signup, no authentication, no rate limits**
+- 🧰 **Developer-first: built for testing, building, and learning**
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: HTML, TailwindCSS, Vanilla JS  
+- **Frontend**: HTML, TailwindCSS, Vanilla JavaScript  
 - **Backend**: Node.js, Express  
-- **Storage**: Upstash Redis  
-- **Deployment**: Render (API), Vercel (UI)  
+- **Storage**: Upstash Redis (lightweight + fast)  
+- **Deployment**: Render (backend), Vercel (frontend)
 
 ---
 
 ## 💻 How It Works
 
-1. Paste your JSON in the input field (arrays or objects).
-2. Click **"Generate API"**.
-3. Get a mock endpoint like:  
-   `https://ezyapi.up.railway.app/api/<unique-id>`
-4. Use that endpoint in your frontend to simulate API calls.
+1. Paste your JSON into the input field (can be a single object or an array).
+2. Click the **"Generate API"** button.
+3. Get a URL like:  https://ezyapi.up.railway.app/api/<unique-id>
+
+4. Use that URL in your app to fetch mock responses like a real API.
 
 ---
 
-## 🔍 Example JSONs
-
-Paste and test things like:
+## 🔍 Example JSON
 
 ```json
 {
-  "orderId": "ORD789",
-  "customer": {
-    "id": 33,
-    "name": "John Doe",
-    "email": "john@example.com"
-  },
-  "items": [
-    { "productId": "p101", "quantity": 2 },
-    { "productId": "p105", "quantity": 1 }
-  ],
-  "total": 89.97,
-  "status": "shipped"
+"orderId": "ORD789",
+"customer": {
+ "id": 33,
+ "name": "John Doe",
+ "email": "john@example.com"
+},
+"items": [
+ { "productId": "p101", "quantity": 2 },
+ { "productId": "p105", "quantity": 1 }
+],
+"total": 89.97,
+"status": "shipped"
 }
+```
+---
+
+## 👋 Author
+Built with ❤️ by **Ayush Dhiman**
+
+<!--
+mock api generator, create fake api, json to api, mock api for frontend, api mocking tool, mock backend, free rest api mock, ezyapi, api builder for frontend, test api online, paste json get api, nodejs mock api, vercel demo api, lightweight api mocker
+-->
